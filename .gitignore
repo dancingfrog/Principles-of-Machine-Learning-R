@@ -1,0 +1,12 @@
+.idea
+.ipynb_checkpoints
+.RData
+.Rhistory
+.Rproj.user
+blogdown
+dist
+node_modules
+public
+content/*html
+webpack.json
+Videos
