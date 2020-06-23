@@ -158,7 +158,39 @@ plot_scatter_sp <- function(df, cols, col_y = 'price', alpha = 1.0){
     }
 }
 
+numcols <- c('price', 'city.mpg', 'curb.weight', 'engine.size', 'fuel.type', 'horsepower')
 plot_scatter_sp(auto_prices, numcols, alpha = 0.2)
 ```
 
+```{r marker_sizes}
+plot_scatter_sp_sz = function(df, cols, col_y = 'price', alpha = 1.0){
+    options(repr.plot.width=5, repr.plot.height=3.5) # Set the initial plot area dimensions
+    df$curb.weight.2 = df$curb.weight**2
+    for(col in cols){
+        p = ggplot(df, aes_string(col, col_y)) + 
+                   geom_point(aes(shape = factor(fuel.type), size = curb.weight.2), alpha = alpha) +
+                   ggtitle(paste('Scatter plot of', col_y, 'vs.', col, '\n with shape by fuel type'))
+        print(p)
+    }
+}
 
+plot_scatter_sp_sz(auto_prices, numcols, alpha = 0.1)
+```
+
+```{r marker_colors}
+plot_scatter_sp_sz_cl = function(df, cols, col_y = 'price', alpha = 1.0){
+    options(repr.plot.width=5, repr.plot.height=3.5) # Set the initial plot area dimensions
+    df$curb.weight.2 = df$curb.weight**2
+    for(col in cols){
+        p = ggplot(df, aes_string(col, col_y)) + 
+                   geom_point(aes(shape = factor(fuel.type), size = curb.weight.2, color = aspiration), 
+                              alpha = alpha) +
+                   ggtitle(paste('Scatter plot of', col_y, 'vs.', col, 
+                                 '\n with shape by fuel type',
+                                 '\n and color by aspiration'))
+        print(p)
+    }
+}
+
+plot_scatter_sp_sz_cl(auto_prices, numcols, alpha = 0.2)
+```
