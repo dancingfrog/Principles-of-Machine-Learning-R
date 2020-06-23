@@ -1,0 +1,74 @@
+---
+title: "Visualizing Data For Regression"
+author: "John"
+date: "6/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+## Import packages
+library(ggplot2)
+library(repr)
+library(hexbin)
+library(GGally) ## Adds pair-wise scatter plots to ggplot2
+options(repr.plot.width=4, repr.plot.height=4) # Set the initial plot area dimensions
+```
+
+
+```{r cars}
+summary(cars)
+colnames(cars)
+
+read.auto <- function(file = 'Automobile price data _Raw_.csv'){
+    ## Read the csv file
+    auto.price <- read.csv(file, header = TRUE, stringsAsFactors = FALSE)
+
+    
+    numcols <- c('price', 'bore', 'stroke', 'horsepower', 'peak.rpm')
+    for(col in numcols){
+        temp = auto.price[,col]
+        auto.price[,col] = ifelse(temp == '?', NA, auto.price[,col])
+    }
+    
+    ## Coerce some character columns to numeric
+    auto.price[, numcols] <- lapply(auto.price[, numcols], as.numeric)
+
+    ## Remove cases or rows with missing values. In this case we keep the 
+    ## rows which do not have nas. 
+    auto.price = auto.price[complete.cases(auto.price[, numcols]), ]
+    
+    ## Drop some unneeded columns
+    auto.price[,'symboling'] = NULL
+    auto.price[,'normalized.losses'] = NULL
+    
+    return(auto.price)
+}
+auto_prices <- read.auto()
+colnames(auto_prices)
+```
+
+```{r explore}
+head(auto_prices)
+
+str(auto_prices)
+
+summary(auto_prices)
+```
+
+```{r bar_charts}
+plot_bars = function(df){
+    options(repr.plot.width=4, repr.plot.height=3.5) # Set the initial plot area dimensions
+    for(col in colnames(df)){
+        if(is.character(df[,col])){
+            p = ggplot(df, aes_string(col)) + 
+                       geom_bar(alpha = 0.6) + 
+                       theme(axis.text.x = element_text(angle = 90, hjust = 1))
+            print(p)
+        }
+    }
+}
+
+plot_bars(auto_prices)
+```
