@@ -194,3 +194,16 @@ plot_scatter_sp_sz_cl = function(df, cols, col_y = 'price', alpha = 1.0){
 
 plot_scatter_sp_sz_cl(auto_prices, numcols, alpha = 0.2)
 ```
+```{r pair_wise_scatter_plots}
+options(repr.plot.width=6, repr.plot.height=6) # Set the initial plot area dimensions
+plot_ggp <- ggpairs(auto_prices,
+      columns = numcols,
+      aes(color = fuel.type, alpha = 0.1),
+      lower = list(continuous = 'points'),
+      upper = list(continuous = ggally_density),
+      progress = FALSE)
+```
+```{r render, echo=FALSE, fig.width=14, fig.height=14}
+options(warn = -1)
+print(plot_ggp)
+```
