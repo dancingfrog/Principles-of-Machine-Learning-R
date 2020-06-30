@@ -20,24 +20,36 @@ options(repr.plot.width=4, repr.plot.height=4) # Set the initial plot area dimen
 
 
 ```{r auto_prices}
-numcols <- c('price', 'bore', 'stroke', 'horsepower', 'peak.rpm')
 
 read.auto <- function(file = 'Automobile price data _Raw_.csv'){
     ## Read the csv file
     auto.price <- read.csv(file, header = TRUE, stringsAsFactors = FALSE)
 
+    numcols <- switch(
+      as.character((!exists("numcols") || is.na(numcols) || is.null(numcols))[1]), 
+      "TRUE" = { # if numcols does not exist or is not populated ("TRUE"), 
+        # use these defaults:
+        c('price', 'bore', 'stroke', 'horsepower', 'peak.rpm')
+      }, # else use existing values
+      numcols)
+    print(c("numeric columns:", numcols))
     
-    numcols <- c('price', 'bore', 'stroke', 'horsepower', 'peak.rpm')
-    for(col in numcols){
-        temp = auto.price[,col]
-        auto.price[,col] = ifelse(temp == '?', NA, auto.price[,col])
+    for(col in c('price', 'bore', 'stroke', 'horsepower', 'peak.rpm')){
+        for (idx in (1:length(auto.price[,col]))) {
+          temp = auto.price[idx,col]
+          if (temp == '?' || is.na(auto.price[idx,col])) {
+            # Convert ? to NA
+            auto.price[idx,col] = ifelse(temp == '?', NA, auto.price[idx,col])
+            print(c(col, idx, auto.price[idx,col]))
+          }
+        }
+      
+        ## Coerce some character columns to numeric
+        auto.price[,col] = as.numeric(auto.price[,col])
     }
-    
-    ## Coerce some character columns to numeric
-    auto.price[, numcols] <- lapply(auto.price[, numcols], as.numeric)
 
-    ## Remove cases or rows with missing values. In this case we keep the 
-    ## rows which do not have nas. 
+    ## Remove cases or rows with missing values. 
+    ## Keep the rows which do not have NAs. 
     auto.price = auto.price[complete.cases(auto.price[, numcols]), ]
     
     ## Drop some unneeded columns
@@ -46,7 +58,14 @@ read.auto <- function(file = 'Automobile price data _Raw_.csv'){
     
     return(auto.price)
 }
+
+cat_cols <- c('fuel.type', 'aspiration', 'num.of.doors', 'body.style', 
+            'drive.wheels', 'engine.location', 'engine.type', 'num.of.cylinders')
+
+plotcols <- c('price', 'city.mpg', 'curb.weight', 'engine.size', 'horsepower', 'fuel.type')
+
 auto_prices <- read.auto()
+print("all auto columns:")
 colnames(auto_prices)
 ```
 
@@ -61,8 +80,11 @@ summary(auto_prices)
 ```{r bar_charts}
 plot_bars <- function(df){
     options(repr.plot.width=4, repr.plot.height=3.5) # Set the initial plot area dimensions
+  
+    print("character columns:")
     for(col in colnames(df)){
         if(is.character(df[,col])){
+            print(col)
             p <- ggplot(df, aes_string(col)) + 
                        geom_bar(alpha = 0.6) + 
                        theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -75,19 +97,19 @@ plot_bars(auto_prices)
 ```
 
 ```{r kernel_density_charts}
-plot_dist <- function(df, numcols){
+plot_dist <- function(df, plotcols){
     options(repr.plot.width=4, repr.plot.height=3) # Set the initial plot area dimensions
-    for(col in numcols){
-        if(is.numeric(df[,col])){
+    for(col in plotcols){
+        #if(is.numeric(df[,col])){
             p <- ggplot(df, aes_string(col)) + 
                        geom_density(color = 'blue') +
                        geom_rug()
             print(p)
-        }
+        #}
     }
 }
 
-plot_dist(auto_prices, numcols)
+plot_dist(auto_prices, plotcols)
 ```
 
 ```{r scatter_plots}
@@ -101,7 +123,7 @@ plot_scatter_t <- function(df, cols, col_y = 'price', alpha = 1.0){
     }
 }
 
-plot_scatter_t(auto_prices, numcols, alpha = 0.2)
+plot_scatter_t(auto_prices, plotcols, alpha = 0.2)
 ```
 
 ```{r hex_bin_charts}
@@ -115,7 +137,7 @@ plot_hex <- function(df, cols, col_y = 'price', bins = 30){
     }
 }
 
-plot_hex(auto_prices, numcols, bins = 10)
+plot_hex(auto_prices, plotcols, bins = 10)
 ```
 
 ```{r box_plots}
@@ -129,8 +151,6 @@ plot_box <- function(df, cols, col_y = 'price'){
     }
 }
 
-cat_cols <- c('fuel.type', 'aspiration', 'num.of.doors', 'body.style', 
-            'drive.wheels', 'engine.location', 'engine.type', 'num.of.cylinders')
 plot_box(auto_prices, cat_cols)
 ```
 
@@ -158,8 +178,7 @@ plot_scatter_sp <- function(df, cols, col_y = 'price', alpha = 1.0){
     }
 }
 
-numcols <- c('price', 'city.mpg', 'curb.weight', 'engine.size', 'fuel.type', 'horsepower')
-plot_scatter_sp(auto_prices, numcols, alpha = 0.2)
+plot_scatter_sp(auto_prices, plotcols, alpha = 0.2)
 ```
 
 ```{r marker_sizes}
@@ -174,7 +193,7 @@ plot_scatter_sp_sz = function(df, cols, col_y = 'price', alpha = 1.0){
     }
 }
 
-plot_scatter_sp_sz(auto_prices, numcols, alpha = 0.1)
+plot_scatter_sp_sz(auto_prices, plotcols, alpha = 0.1)
 ```
 
 ```{r marker_colors}
@@ -192,20 +211,19 @@ plot_scatter_sp_sz_cl = function(df, cols, col_y = 'price', alpha = 1.0){
     }
 }
 
-plot_scatter_sp_sz_cl(auto_prices, numcols, alpha = 0.2)
+plot_scatter_sp_sz_cl(auto_prices, plotcols, alpha = 0.2)
 ```
-
-
 ```{r pair_wise_scatter_plots}
 options(repr.plot.width=6, repr.plot.height=6) # Set the initial plot area dimensions
 plot_ggp <- ggpairs(auto_prices,
-      columns = numcols,
+      columns = plotcols,
       aes(color = fuel.type, alpha = 0.1),
-      lower = list(continuous = wrap("points", alpha = 0.3), combo = wrap("dot_no_facet", binwidth = 1)),
-      upper = list(continuous = ggally_density, combo = wrap("dot_no_facet", binwidth = 1)),
+      lower = list(continuous = wrap("points", alpha = 0.3), combo = wrap("facethist", binwidth=0.8)),
+      upper = list(continuous = ggally_density, combo = wrap("box")),
       progress = FALSE)
 ```
-
-```{r render, echo=FALSE, fig.width=14, fig.height=14, warning=FALSE}
+```{r render, echo=FALSE, fig.width=14, fig.height=14}
+options(warn = -1)
 print(plot_ggp)
 ```
+
