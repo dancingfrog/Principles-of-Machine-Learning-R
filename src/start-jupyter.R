@@ -3,4 +3,4 @@ if (!require("reticulate")) {
   library("reticulate")
 }
 
-reticulate::source_python("start-jupyter.py")
+reticulate::source_python("src/start-jupyter.py")
