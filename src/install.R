@@ -6,4 +6,6 @@ if (!require("blogdown")) {
 
 print(getwd())
 
+remotes::install_version('glmnet', version = '2.0-18')
+
 rmarkdown::render(paste0(getwd(), '/content/setup.Rmd'))
