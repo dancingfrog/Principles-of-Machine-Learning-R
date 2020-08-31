@@ -18,10 +18,43 @@ options(repr.plot.width=4, repr.plot.height=4) # Set the initial plot area dimen
 
 ## Visualizing Data For Regression
 
+In this lab, you will learn how to use R to **visualize and explore data**. This process is also known as **exploratory data analysis**.
+
+Before creating analytical models, a data scientist must develop an understanding of the properties and relationships in a dataset. There are two goals for data exploration and visualization. First to understand the relationships between the data columns. Second to identify features that may be useful for predicting labels in machine learning projects. Additionally, redundant, collinear features can be identified. Thus, visualization for data exploration is an essential data science skill.
+In this lab you will explore two datasets.
+
+Specifically, in this lab, your first goal is to explore a dataset that includes information about automobile pricing. In other labs you will use what you learn through visualization to create a solution that predicts the price of an automobile based on its characteristics. This type of predictive modeling, in which you attempt to predict a real numeric value, is known as **regression**; and it will be discussed in more detail later in the course. For now, the focus of this lab is on visually exploring the data to determine which features may be useful in predicting automobile prices.
+
+This lesson is divided into several parts. In each part you will learn how to use the visualization tools available in Python to explore complex data. Specifically you will learn:
+
+- **Summarizing and manipulating data**:
+  * How large is it?
+  * What columns are of interest?
+  * What are the characteristics of the data derived from summary statistics and counts?
+- **Developing multiple views of complex data** using multiple chart types. Exploring complex data requires multiple views to understand the many relationships. It is impossible to develop a complete understanding from just a few plots.
+- **Overview of plotting with ggplot2** a powerful and flexible R plotting packages.
+- **Overview of univariate plot types** is a review of creating these basic plots using ggplot2. These plot types allow you to study the distributional properties of the variables in your data set.
+- **Overview of two dimensional plot types** is a review of creating basic plot types used to construct visualizations. These plots naturally display the relationship between two variables on the 2-d computer graphics display.
+- **Using Aesthetics** is an overview of how to project additional plot dimensions using plot aesthetics. Using aesthetics provides a method for projecting additional dimensions onto the 2-d computer graphics display.
+- **Faceted plotting** also know as conditioned plotting or lattice plotting, introduces a powerful method for visualizing higher dimensional data. Arrays of plots of subsets of the data are arranged on the 2-d computer graphics display.
+
+## Load the dataset
+
+Before you can start visualization, you must load the dataset. The code in the cell below loads the data and performs some data cleaning. You will work though data cleaning and preparation methods in other labs.
+
+As a first step execute the code in the cell below to import the R packages you will need for the rest of this network. Execute this code
+
+> **Note:** If you are running in Azure Notebooks, make sure that you run the code in the `setup.ipynb` notebook at the start of you session to ensure your environment is correctly configured.
 
 ```{r auto_prices}
 
-read.auto <- function(file = 'Automobile price data _Raw_.csv'){
+if (file.exists("Automobile price data _Raw_.csv")) {
+    dataFile <- "Automobile price data _Raw_.csv"
+} else {
+    dataFile <- file.choose()
+}
+
+read.auto <- function(file = dataFile){
     ## Read the csv file
     auto.price <- read.csv(file, header = TRUE, stringsAsFactors = FALSE)
 
