@@ -18,25 +18,25 @@ options(repr.plot.width=4, repr.plot.height=4) # Set the initial plot area dimen
 
 ## Visualizing Data For Regression
 
-In this lab, you will learn how to use R to **visualize and explore data**. This process is also known as **exploratory data analysis**.
+In this lab, you will learn how to use R to  ^ visualize and explore data ^ . This process is also known as  ^ exploratory data analysis ^ .
 
 Before creating analytical models, a data scientist must develop an understanding of the properties and relationships in a dataset. There are two goals for data exploration and visualization. First to understand the relationships between the data columns. Second to identify features that may be useful for predicting labels in machine learning projects. Additionally, redundant, collinear features can be identified. Thus, visualization for data exploration is an essential data science skill.
 In this lab you will explore two datasets.
 
-Specifically, in this lab, your first goal is to explore a dataset that includes information about automobile pricing. In other labs you will use what you learn through visualization to create a solution that predicts the price of an automobile based on its characteristics. This type of predictive modeling, in which you attempt to predict a real numeric value, is known as **regression**; and it will be discussed in more detail later in the course. For now, the focus of this lab is on visually exploring the data to determine which features may be useful in predicting automobile prices.
+Specifically, in this lab, your first goal is to explore a dataset that includes information about automobile pricing. In other labs you will use what you learn through visualization to create a solution that predicts the price of an automobile based on its characteristics. This type of predictive modeling, in which you attempt to predict a real numeric value, is known as  ^ regression ^ ; and it will be discussed in more detail later in the course. For now, the focus of this lab is on visually exploring the data to determine which features may be useful in predicting automobile prices.
 
 This lesson is divided into several parts. In each part you will learn how to use the visualization tools available in Python to explore complex data. Specifically you will learn:
 
-- **Summarizing and manipulating data**:
+-  ^ Summarizing and manipulating data ^ :
   * How large is it?
   * What columns are of interest?
   * What are the characteristics of the data derived from summary statistics and counts?
-- **Developing multiple views of complex data** using multiple chart types. Exploring complex data requires multiple views to understand the many relationships. It is impossible to develop a complete understanding from just a few plots.
-- **Overview of plotting with ggplot2** a powerful and flexible R plotting packages.
-- **Overview of univariate plot types** is a review of creating these basic plots using ggplot2. These plot types allow you to study the distributional properties of the variables in your data set.
-- **Overview of two dimensional plot types** is a review of creating basic plot types used to construct visualizations. These plots naturally display the relationship between two variables on the 2-d computer graphics display.
-- **Using Aesthetics** is an overview of how to project additional plot dimensions using plot aesthetics. Using aesthetics provides a method for projecting additional dimensions onto the 2-d computer graphics display.
-- **Faceted plotting** also know as conditioned plotting or lattice plotting, introduces a powerful method for visualizing higher dimensional data. Arrays of plots of subsets of the data are arranged on the 2-d computer graphics display.
+-  ^ Developing multiple views of complex data ^  using multiple chart types. Exploring complex data requires multiple views to understand the many relationships. It is impossible to develop a complete understanding from just a few plots.
+-  ^ Overview of plotting with ggplot2 ^  a powerful and flexible R plotting packages.
+-  ^ Overview of univariate plot types ^  is a review of creating these basic plots using ggplot2. These plot types allow you to study the distributional properties of the variables in your data set.
+-  ^ Overview of two dimensional plot types ^  is a review of creating basic plot types used to construct visualizations. These plots naturally display the relationship between two variables on the 2-d computer graphics display.
+-  ^ Using Aesthetics ^  is an overview of how to project additional plot dimensions using plot aesthetics. Using aesthetics provides a method for projecting additional dimensions onto the 2-d computer graphics display.
+-  ^ Faceted plotting ^  also know as conditioned plotting or lattice plotting, introduces a powerful method for visualizing higher dimensional data. Arrays of plots of subsets of the data are arranged on the 2-d computer graphics display.
 
 ## Load the dataset
 
@@ -44,7 +44,7 @@ Before you can start visualization, you must load the dataset. The code in the c
 
 As a first step execute the code in the cell below to import the R packages you will need for the rest of this network. Execute this code
 
-> **Note:** If you are running in Azure Notebooks, make sure that you run the code in the `setup.ipynb` notebook at the start of you session to ensure your environment is correctly configured.
+>  ^ Note: ^  If you are running in Azure Notebooks, make sure that you run the code in the `setup.ipynb` notebook at the start of you session to ensure your environment is correctly configured.
 
 ```{r auto_prices}
 
@@ -215,11 +215,11 @@ plot_scatter_sp(auto_prices, plotcols, alpha = 0.2)
 ```
 
 ```{r marker_sizes}
-plot_scatter_sp_sz = function(df, cols, col_y = 'price', alpha = 1.0){
+plot_scatter_sp_sz <- function(df, cols, col_y = 'price', alpha = 1.0){
     options(repr.plot.width=5, repr.plot.height=3.5) # Set the initial plot area dimensions
-    df$curb.weight.2 = df$curb.weight**2
+    df$curb.weight.2 <- df$curb.weight ^ 2
     for(col in cols){
-        p = ggplot(df, aes_string(col, col_y)) + 
+        p <- ggplot(df, aes_string(col, col_y)) +
                    geom_point(aes(shape = factor(fuel.type), size = curb.weight.2), alpha = alpha) +
                    ggtitle(paste('Scatter plot of', col_y, 'vs.', col, '\n with shape by fuel type'))
         print(p)
@@ -230,11 +230,11 @@ plot_scatter_sp_sz(auto_prices, plotcols, alpha = 0.1)
 ```
 
 ```{r marker_colors}
-plot_scatter_sp_sz_cl = function(df, cols, col_y = 'price', alpha = 1.0){
+plot_scatter_sp_sz_cl <- function(df, cols, col_y = 'price', alpha = 1.0){
     options(repr.plot.width=5, repr.plot.height=3.5) # Set the initial plot area dimensions
-    df$curb.weight.2 = df$curb.weight**2
+    df$curb.weight.2 <- df$curb.weight ^ 2
     for(col in cols){
-        p = ggplot(df, aes_string(col, col_y)) + 
+        p <- ggplot(df, aes_string(col, col_y)) +
                    geom_point(aes(shape = factor(fuel.type), size = curb.weight.2, color = aspiration), 
                               alpha = alpha) +
                    ggtitle(paste('Scatter plot of', col_y, 'vs.', col, 
@@ -247,7 +247,7 @@ plot_scatter_sp_sz_cl = function(df, cols, col_y = 'price', alpha = 1.0){
 plot_scatter_sp_sz_cl(auto_prices, plotcols, alpha = 0.2)
 ```
 ```{r pair_wise_scatter_plots}
-options(repr.plot.width=6, repr.plot.height=6) # Set the initial plot area dimensions
+options(repr.plot.width=6, repr.plot.height=6)
 plot_ggp <- ggpairs(auto_prices,
       columns = plotcols,
       aes(color = fuel.type, alpha = 0.1),
